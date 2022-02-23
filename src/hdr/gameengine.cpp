@@ -43,7 +43,6 @@ GameEngine::GameEngine(unsigned short BUFFER_W, unsigned short BUFFER_H, unsigne
 
 	// initialize allegro
 	must_init(al_init(), "allegro");
-	must_init(al_install_keyboard(), "keyboard");
 
 	// create timer
 	timer = al_create_timer(1.0 / 60);
@@ -68,7 +67,6 @@ GameEngine::GameEngine(unsigned short BUFFER_W, unsigned short BUFFER_H, unsigne
 	must_init(al_init_image_addon(), "image addon");
 
 	// event queues?
-	al_register_event_source(queue, al_get_keyboard_event_source());
 	al_register_event_source(queue, al_get_display_event_source(disp));
 	al_register_event_source(queue, al_get_timer_event_source(timer));
 
@@ -97,6 +95,24 @@ GameEngine::~GameEngine()
 
 	al_destroy_timer(timer);
 	al_destroy_event_queue(queue);
+};
+
+void GameEngine::keyboard_init()
+{
+	must_init(al_install_keyboard(), "keyboard");
+
+	al_register_event_source(queue, al_get_keyboard_event_source());
+};
+void GameEngine::mouse_init()
+{
+	must_init(al_install_mouse(), "mouse");
+
+	al_register_event_source(queue, al_get_mouse_event_source());
+};
+
+void GameEngine::hide_mouse()
+{
+	al_hide_mouse_cursor(disp);
 };
 
 void GameEngine::wait_for_event()
@@ -128,17 +144,28 @@ void GameEngine::keyboard_update()
 {
 	switch (event.type)
 	{
-	case ALLEGRO_EVENT_TIMER:
+	case NEW_FRAME:
 		for (int i = 0; i < ALLEGRO_KEY_MAX; i++)
 			key[i] &= KEY_SEEN;
 		break;
 
-	case ALLEGRO_EVENT_KEY_DOWN:
+	case KEY_DOWN:
 		key[event.keyboard.keycode] = KEY_SEEN | KEY_RELEASED;
 		break;
 
-	case ALLEGRO_EVENT_KEY_UP:
+	case KEY_UP:
 		key[event.keyboard.keycode] &= KEY_RELEASED;
+		break;
+	};
+};
+void GameEngine::mouse_update()
+{
+	switch (event.type)
+	{
+	case MOUSE_MOVE:
+		mouse_x = event.mouse.x;
+		mouse_y = event.mouse.y;
+		mouse_z = event.mouse.z;
 		break;
 	};
 };
@@ -146,4 +173,3 @@ bool GameEngine::key_pressed(unsigned char keycode)
 {
 	return key[keycode];
 };
-

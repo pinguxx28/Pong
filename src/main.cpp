@@ -7,7 +7,9 @@
 int main()
 {
 	// initialize an the game engine
-	GameEngine engine(360, 272, 3, al_map_rgb_f(0, 0, 0), 1);
+	GameEngine engine(1080, 960, 1, al_map_rgb_f(0, 0, 0), 1);
+	engine.keyboard_init();
+	engine.mouse_init();
 
 	// gameloop
 	while (engine.running())
@@ -28,11 +30,13 @@ int main()
 
 		if (engine.disp_closed()) break; // exit gameloop if display closed
 		engine.keyboard_update(); // update keyboard
+		engine.mouse_update(); // update mouse
 
 		// if we can draw the next frame
 		if (engine.next_frame())
 		{
 			engine.pre_draw(); // prepare the drawing environment
+
 
 			engine.post_draw(); // render
 		};

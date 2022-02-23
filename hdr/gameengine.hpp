@@ -10,6 +10,9 @@ typedef enum EVENTS
 {
 	NEW_FRAME = ALLEGRO_EVENT_TIMER,
 	DISP_CLOSE = ALLEGRO_EVENT_DISPLAY_CLOSE,
+	KEY_DOWN = ALLEGRO_EVENT_KEY_DOWN,
+	KEY_UP = ALLEGRO_EVENT_KEY_UP,
+	MOUSE_MOVE = ALLEGRO_EVENT_MOUSE_AXES,
 } EVENT;
 
 #define KEY_SEEN 1
@@ -38,6 +41,10 @@ typedef class GameEngine
 		bool done;
 		bool redraw;
 
+		int mouse_x;
+		int mouse_y;
+		int mouse_z;
+
 		unsigned char key[ALLEGRO_KEY_MAX];
 
 		ALLEGRO_DISPLAY* getDisp();
@@ -53,6 +60,11 @@ typedef class GameEngine
 				   unsigned short multisampling);
 		~GameEngine();
 
+		void keyboard_init();
+		void mouse_init();
+
+		void hide_mouse();
+
 		void wait_for_event();
 		ALLEGRO_EVENT_TYPE get_event();
 
@@ -62,5 +74,6 @@ typedef class GameEngine
 		bool next_frame();
 
 		void keyboard_update();
+		void mouse_update();
 		bool key_pressed(unsigned char keycode);
 } GameEngine;
