@@ -1,44 +1,46 @@
-#include <iostream>
-#include <stdlib.h>
-#include <allegro5/allegro5.h>
-#include "gameengine.hpp"
-#include "sprite.hpp"
+#include <cstdlib>
+#include <ctime>
+#include "pix.hpp"
+#include "colors.hpp"
+#include "draw.hpp"
 
 int main()
 {
 	// initialize an the game engine
-	GameEngine engine(1080, 960, 1, al_map_rgb_f(0, 0, 0), 1);
-	engine.keyboard_init();
-	engine.mouse_init();
+	pix::Pix engine(480, 320, 1, color::black);
+	engine.keyboardInit();
+	engine.mouseInit();
+
 
 	// gameloop
 	while (engine.running())
 	{
-		engine.wait_for_event(); // wait until we receive an event
+		engine.waitForEvent(); // wait until we receive an event
 
 		// check what the event was
-		switch (engine.get_event())
+		switch (engine.getEvent())
 		{
-			case NEW_FRAME: // new frame
+			case pix::NEW_FRAME: // new frame
 
-				engine.update_frame(); // update frame
+				engine.updateFrame(); // update frame
 				break;
-			case DISP_CLOSE:		 // display close button pressed
-				engine.close_disp(); // close the display
+			case pix::DISP_CLOSE:		 // display close button pressed
+				engine.closeDisp(); // close the display
 				break;
 		};
 
-		if (engine.disp_closed()) break; // exit gameloop if display closed
-		engine.keyboard_update(); // update keyboard
-		engine.mouse_update(); // update mouse
+		if (engine.dispClosed()) break; // exit gameloop if display closed
+		engine.keyboardUpdate(); // update keyboard
+		engine.mouseUpdate(); // update mouse
 
 		// if we can draw the next frame
-		if (engine.next_frame())
+		if (engine.nextFrame())
 		{
-			engine.pre_draw(); // prepare the drawing environment
+			engine.preDraw(); // prepare the drawing environment
 
+			draw::circle(engine.fMouseX, std::abs(engine.fMouseY), std::abs(engine.fMouseZ), color::red, 0);
 
-			engine.post_draw(); // render
+			engine.postDraw(); // render
 		};
 	};
 
