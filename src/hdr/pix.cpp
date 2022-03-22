@@ -71,9 +71,6 @@ Pix::Pix(short sBufferW, short sBufferH, float fDispScale, ALLEGRO_COLOR cBackgr
 	// initialize primitives
 	mustInit(al_init_primitives_addon(), "primitives");
 
-	// initialize images
-	mustInit(al_init_image_addon(), "image addon");
-
 	// event queues?
 	al_register_event_source(qQueue, al_get_display_event_source(dDisp));
 	al_register_event_source(qQueue, al_get_timer_event_source(tTimer));
