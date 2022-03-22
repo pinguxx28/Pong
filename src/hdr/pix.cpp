@@ -38,14 +38,14 @@ void Pix::postDraw()
 	al_flip_display();
 };
 
-Pix::Pix(short sBufferW, short sBufferH, u_char ucDispScale, ALLEGRO_COLOR cBackgroundColor)
+Pix::Pix(short sBufferW, short sBufferH, float fDispScale, ALLEGRO_COLOR cBackgroundColor)
 {
 	// set display variables
 	this->sBufferW = sBufferW;
 	this->sBufferH = sBufferH;
-	this->sDispW = ucDispScale * sBufferW;
-	this->sDispH = ucDispScale * sBufferH;
-	this->ucDispScale = ucDispScale;
+	this->sDispW = fDispScale * sBufferW;
+	this->sDispH = fDispScale * sBufferH;
+	this->fDispScale = fDispScale;
 
 	this->cBackgroundColor = cBackgroundColor;
 

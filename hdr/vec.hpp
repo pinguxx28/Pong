@@ -2,10 +2,10 @@
 
 namespace vec
 {
-    typedef struct fVec2D { float x, y; } fVec2D;
-    typedef struct dVec2D { double x, y; } dVec2D;
-    typedef struct ucVec2D { u_char x, y; } ucVec2D;
-    typedef struct cVec2D { char x, y; } cVec2D;
-    typedef struct sVec2D { short x, y; } sVec2D;
-    typedef struct iVec2D { int x, y; } iVec2D;
-}
+    typedef struct vec2D { float x, y; } vec2D;
+
+    vec2D addVec2D(vec2D vec1, vec2D vec2);
+    vec2D subVec2D(vec2D vec1, vec2D vec2);
+    vec2D multVec2D(vec2D vec1, vec2D vec2);
+    vec2D divVec2D(vec2D vec1, vec2D vec2);
+};

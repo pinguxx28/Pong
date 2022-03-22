@@ -20,6 +20,10 @@ namespace pix
 	    KEY_DOWN   = ALLEGRO_EVENT_KEY_DOWN,
 	    KEY_UP     = ALLEGRO_EVENT_KEY_UP,
 	    MOUSE_MOVE = ALLEGRO_EVENT_MOUSE_AXES,
+		MOUSE_DOWN = ALLEGRO_EVENT_MOUSE_BUTTON_DOWN,
+		MOUSE_UP   = ALLEGRO_EVENT_MOUSE_BUTTON_UP,
+		MOUSE_ENTER= ALLEGRO_EVENT_MOUSE_ENTER_DISPLAY,
+		MOUSE_LEAVE= ALLEGRO_EVENT_MOUSE_LEAVE_DISPLAY,
     } EVENT;
 
     #define KEY_SEEN 1
@@ -42,7 +46,7 @@ namespace pix
     public:
 		u_short sBufferW, sBufferH;
 		u_short sDispW, sDispH;
-		u_char  ucDispScale;
+		float   fDispScale;
 
 		long lFrames;
 
@@ -60,7 +64,7 @@ namespace pix
 		void preDraw();
 		void postDraw();
 
-		Pix(short sBufferW, short uBufferH, u_char ucBufferScale, ALLEGRO_COLOR cBackgroundColor);
+		Pix(short sBufferW, short uBufferH, float fBufferScale, ALLEGRO_COLOR cBackgroundColor);
 		~Pix();
 
 		void keyboardInit();
