@@ -13,9 +13,14 @@ int main()
 	std::printf("Loading...\n");
 	// === LOADING ===
 
-	pix::Pix engine(dispW, dispH, 1, color::black);
+	char str[] = "\"Hello World!\", says Bandy. Oh no;:@?";
+
+	pix::Pix engine(dispW, dispH, 3, color::black);
 	engine.keyboardInit();
 	engine.mouseInit();
+
+	for (int i = 32; i < 200; i++)
+	printf("%c", i);
 
 	// ======
 	std::printf("Done!\n");
@@ -43,9 +48,10 @@ int main()
 		{
 			engine.preDraw(); 
 
-			for (register u_char i = 0; i < font::totalLetters; i++)
+			char ch;
+			for (register int c = 0; c < strlen(str); c++)
 			{
-				draw::texture64(font::font[i], i * 8, 0, color::white);
+				draw::texture64(font::font[font::index(str[c])], c * 8 - u_char(c / 20) * (8 * 20), u_char(c / 20) * 8 + u_char(c / 20), color::white);
 			}
 
 			engine.postDraw(); 
