@@ -1,6 +1,7 @@
 #include "pix.hpp"
 #include "draw.hpp"
-#include "colors.hpp"
+#include "color.hpp"
+#include "font.hpp"
 
 // === DISPLAY ===
 #define dispW (8 * 32)
@@ -12,7 +13,7 @@ int main()
 	std::printf("Loading...\n");
 	// === LOADING ===
 
-	pix::Pix engine(dispW, dispH, 3, color::black);
+	pix::Pix engine(dispW, dispH, 1, color::black);
 	engine.keyboardInit();
 	engine.mouseInit();
 
@@ -42,6 +43,10 @@ int main()
 		{
 			engine.preDraw(); 
 
+			for (register u_char i = 0; i < font::totalLetters; i++)
+			{
+				draw::texture64(font::font[i], i * 8, 0, color::white);
+			}
 
 			engine.postDraw(); 
 		};
