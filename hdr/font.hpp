@@ -10,14 +10,9 @@ namespace font
     const u_char fontWidth = 8;
     const u_char fontSize = fontWidth * fontWidth;
 
-    u_char index(char character)
-    {
-        char ch = toupper(character);
+    u_char index(char character);
 
-        return ch - 32;
-    }
-
-    bool font[totalLetters][fontSize] = 
+    const bool font[totalLetters][fontSize] = 
     {
         {
         // SPECIAL 1
