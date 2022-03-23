@@ -13,8 +13,6 @@ int main()
 	std::printf("Loading...\n");
 	// === LOADING ===
 
-	char str[] = "Hello World!";
-
 	pix::Pix engine(dispW, dispH, 3, color::black);
 	engine.keyboardInit();
 	engine.mouseInit();
@@ -45,7 +43,7 @@ int main()
 		{
 			engine.preDraw(); 
 
-			draw::string(str, 8, 8, color::green);
+
 
 			engine.postDraw(); 
 		};
