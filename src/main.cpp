@@ -12,14 +12,8 @@
 #define dispW (8 * 32)
 #define dispH (8 * 30)
 
-// 0, Start menu
-// 1, Game
-// 2, Win
-// 3, Loose
-u_char screen = 0;
-// 0, Main
-// 1, How-to
-u_char menuScreen = 0;
+u_char screen = 0;     // 0, start menu, 1, Game, 2, Win, 3, Loose
+u_char menuScreen = 0; // 0, Main, 1, How-to
 char menuScreenPtr = 0;
 bool pauseGame = 0;
 
@@ -105,10 +99,10 @@ int main()
 	std::srand(time(0)); // set random seed
 
 	// Define colors
-	white     = RGBF(1,1,1);
+	white     = RGBF(1.0f,1.0f,1.0f);
 	darkgray  = RGBF(0.3f,0.3f,0.3f);
 	lightgray = RGBF(0.5f,0.5f,0.5f);
-	black     = RGBF(0,0,0);
+	black     = RGBF(0.0f,0.0f,0.0f);
 
 	pix::Pix engine(dispW, dispH, 3, black); // Initialize the engine
 	engine.keyboardInit();                   // Initialize the keyboard
@@ -151,7 +145,7 @@ int main()
 			handleScreen(&engine);
 			break;
 		case pix::NEW_FRAME:
-			if (screen == 1 && !pauseGame)
+			if (screen == 1 && !pauseGame) // If in-game and game not puased
 			{
 				updatePaddles(&engine); // Update the paddles, move and serve
 				updateBall();			// Check collisions and move ball
@@ -174,19 +168,18 @@ int main()
 			// === DRAW ===
 			if (screen == 0)
 			{
-				if (menuScreen == 0)
+				if (menuScreen == 0) // Main screen
 				{
-					draw::string((char *) "Pong"  , dispW * 0.1f, dispH * 0.2f, 24, 24, white);
+					draw::string((char *) "Pong"  , dispW * 0.1f, dispH * 0.2f, 24, 24, white); // Draw title
 
-					draw::string((char *) "Play"  , dispW * 0.1f, dispH * 0.6f,      12, 12, white);
-					draw::string((char *) "How-to", dispW * 0.1f, dispH * 0.6f + 16, 12, 12, white);
+					draw::string((char *) "Play"  , dispW * 0.1f, dispH * 0.6f,      12, 12, white); // Game button
+					draw::string((char *) "How-to", dispW * 0.1f, dispH * 0.6f + 16, 12, 12, white); // How-to button
 
-					// Draw pointer
-					draw::texture64(font::font[font::index('>')], dispW * 0.1f - 16, dispH * 0.6f + menuScreenPtr * 16 + 2, 12, 8, white);
+					draw::texture64(font::font[font::index('>')], dispW * 0.1f - 16, dispH * 0.6f + menuScreenPtr * 16 + 2, 12, 8, white); // Draw pointer
 				}
-				else if (menuScreen == 1)
+				else if (menuScreen == 1) // How-to screen
 				{
-					draw::string((char *) "How-to", dispW * 0.1f, dispH * 0.2f, 20, 20, white);
+					draw::string((char *) "How-to", dispW * 0.1f, dispH * 0.2f, 20, 20, white); // Draw title
 
 					// Paddle1 (left)
 					draw::string((char *) "Paddle1 (left)"           , dispW * 0.1f, dispH * 0.4f,      12, 12, white);
@@ -200,18 +193,16 @@ int main()
 
 				}
 			}
-			else if (screen == 1)
+			else if (screen == 1) // In-game
 			{
 				drawNet(); 			  // Draw the middle net
 				drawBall();			  // Draw the ball
 				drawPaddles(&engine); // Draw the paddles and scores
 
-				if (pauseGame) draw::string((char *) "Paused", dispW / 2 - 3 * 16, dispH / 2 - 8, 16, 16, darkgray);
+				if (pauseGame) draw::string((char *) "Paused", dispW / 2 - 3 * 16, dispH / 2 - 8, 16, 16, darkgray); // Draw paused text, if game paused
 			}
-			else if (screen == 2)
-				draw::string((char *) "Player1 wins!", dispW / 2 - 6 * 8, dispH / 2 - 4, 8, 8, white);
-			else if (screen == 3)
-				draw::string((char *) "Player2 wins!", dispW / 2 - 6 * 8, dispH / 2 - 4, 8, 8, white);
+			else if (screen == 2) draw::string((char *) "Player1 wins!", dispW / 2 - 6 * 8, dispH / 2 - 4, 8, 8, white); // Player1 win
+			else if (screen == 3) draw::string((char *) "Player2 wins!", dispW / 2 - 6 * 8, dispH / 2 - 4, 8, 8, white); // Player2 win
 			// ======
 
 			engine.postDraw(); 
@@ -219,7 +210,7 @@ int main()
 	}
 
 	// Destroy music
-	al_destroy_sample(hit1); al_destroy_sample(hit2); al_destroy_sample(hit3);
+	al_destroy_sample(hit1);   al_destroy_sample(hit2);       al_destroy_sample(hit3);
 	al_destroy_sample(goBack); al_destroy_sample(goForwards);
 	al_destroy_sample(score);
 	al_destroy_audio_stream(music);
@@ -229,34 +220,39 @@ int main()
 
 void handleScreen(pix::Pix *engine) // Handle actions on menus, screens
 {
-	if (screen == 0 && menuScreen == 0) // If on main menu
+	if (screen == 0) // Menu
 	{
-		// Move menu pointer
-		if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_UP  ) menuScreenPtr--;
-		if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_DOWN) menuScreenPtr++;
+		if (menuScreen == 0) // Main menu
+		{
+			// Move menu pointer
+			if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_UP  ) menuScreenPtr--;
+			if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_DOWN) menuScreenPtr++;
+			// Keep pointer inside of boundaries
+			if (menuScreenPtr < 0) menuScreenPtr = 1;
+			if (menuScreenPtr > 1) menuScreenPtr = 0;
 
-		if (menuScreenPtr < 0) menuScreenPtr = 1;
-		if (menuScreenPtr > 1) menuScreenPtr = 0;
+			// Play
+			if (menuScreenPtr == 0 && engine->eEvent.keyboard.keycode == ALLEGRO_KEY_ENTER) { screen = 1;     al_play_sample(goForwards, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); initPaddles(); initBall(); al_set_audio_stream_playing(music, true);	al_seek_audio_stream_secs(music, 0); }
+			// How-to menu
+			if (menuScreenPtr == 1 && engine->eEvent.keyboard.keycode == ALLEGRO_KEY_ENTER) { menuScreen = 1; al_play_sample(goForwards, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); }
+		}
+		else if (menuScreen == 1)
+		{
+			// Go back to main menu
+			if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_BACKSPACE) { menuScreen = 0; al_play_sample(goBack, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); }
+		}
 	}
-
-	if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_ENTER) // Enter pressed
+	else if (screen == 1) // In-game
 	{
-		if (screen == 1) {  al_set_audio_stream_playing(music, pauseGame); pauseGame = std::abs(pauseGame - 1); } // Pause the game in-game
-
-		// Go to game or to how-to menu
-		if (menuScreenPtr == 0 && menuScreen == 0 && screen == 0) { screen = 1;     al_play_sample(goForwards, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); initPaddles(); initBall(); al_set_audio_stream_playing(music, true);	al_seek_audio_stream_secs(music, 0); }
-		if (menuScreenPtr == 1 && menuScreen == 0 && screen == 0) { menuScreen = 1; al_play_sample(goForwards, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); }
-
-		// Go back to main menu from win / loose
-		if (screen == 2 || screen == 3) { screen = 0; }
+		// Pause game
+		if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_ENTER) { al_set_audio_stream_playing(music, pauseGame); pauseGame = std::abs(pauseGame - 1); }
+		// Exit
+		if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_BACKSPACE) { screen = 0; al_play_sample(goBack, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); al_set_audio_stream_playing(music, false); }
 	}
-
-	if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_BACKSPACE) // Backspace pressed
+	else if (screen == 2 || screen == 3) // Game end
 	{
-		// Go back from how-to page
-		if (menuScreen == 1 && screen == 0) { menuScreen = 0; al_play_sample(goBack, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); }
-		// Go back from in-game
-		if (screen == 1)        			{ screen = 0; 	  al_play_sample(goBack, 1.0f, 0.0f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL); al_set_audio_stream_playing(music, false); }
+		// Continue
+		if (engine->eEvent.keyboard.keycode == ALLEGRO_KEY_ENTER) { screen = 0; }
 	}
 }
 
@@ -358,31 +354,29 @@ void scorePoint(float xVel, u_char *scoreP, bool *shooter) // Score for one side
 void updateBall() // Update the ball, check collision, move ball
 {
 	// === Paddles ===
+	bool paddle1Hit = 0, paddle2Hit = 0;
+
 	// Paddle1 collision
-	if (ball.x - ball.r - 1 < paddle1.x + paddle1.w && ball.x + ball.r > paddle1.x && ball.y - ball.r - 1 < paddle1.y + paddle1.h && ball.y + ball.r > paddle1.y)
-	{
-		float angle = atan2f(ball.y - (paddle1.y + paddle1.h / 2), ball.x - 0); // Find angle	
-		if (ball.speed < maxBallSpeed) ball.speed += 0.1f; // Increase ball speed
-
-		// Apply angle
-		ball.xVel = cosf(angle) * ball.speed;
-		ball.yVel = sinf(angle) * ball.speed;
-
-		// Play sound
-		al_play_sample(hits[rand() % 3], 1.0f, -0.2f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
-	}
+	if (ball.x - ball.r - 1 < paddle1.x + paddle1.w && ball.x + ball.r > paddle1.x && ball.y - ball.r - 1 < paddle1.y + paddle1.h && ball.y + ball.r > paddle1.y) paddle1Hit = 1;
 	// Paddle2 collision
-	if (ball.x - ball.r - 1 < paddle2.x + paddle2.w && ball.x + ball.r > paddle2.x && ball.y - ball.r - 1 < paddle2.y + paddle2.h && ball.y + ball.r > paddle2.y)
-	{
-		float angle = atan2f(ball.y - (paddle2.y + paddle2.h / 2), ball.x - dispW); // Find angle
-		if (ball.speed < maxBallSpeed) ball.speed += 0.1f; // Increase ball speed
+	if (ball.x - ball.r - 1 < paddle2.x + paddle2.w && ball.x + ball.r > paddle2.x && ball.y - ball.r - 1 < paddle2.y + paddle2.h && ball.y + ball.r > paddle2.y) paddle2Hit = 1;
 
+	// Paddle collision
+	if (paddle1Hit || paddle2Hit)
+	{
+		// Find angle
+		float angle;
+		if (paddle1Hit) angle = atan2f(ball.y - (paddle1.y + paddle1.h / 2), ball.x - 0    );
+		else 			angle = atan2f(ball.y - (paddle2.y + paddle2.h / 2), ball.x - dispW);
+		
+		if (ball.speed < maxBallSpeed) ball.speed += 0.1f; // Increase ball speed
+		
 		// Apply angle
 		ball.xVel = cosf(angle) * ball.speed;
 		ball.yVel = sinf(angle) * ball.speed;
 
 		// Play sound
-		al_play_sample(hits[rand() % 3], 1.0f, 0.2f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
+		al_play_sample(hits[rand() % 3], 1.0f, (paddle1Hit) ? -0.2f : 0.2f, 1.0f, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
 
 	// === Top and bottom edges ===
@@ -398,15 +392,8 @@ void updateBall() // Update the ball, check collision, move ball
 	// === Set shadows ===
 	for (register u_char i = 0; i < ballShadowsLen; i++)
 	{
-		if (i+1 < ballShadowsLen)
-		{
-			ball.shadow[i].x = ball.shadow[i + 1].x;
-			ball.shadow[i].y = ball.shadow[i + 1].y;
-			continue;
-		}
-
-		ball.shadow[i].x = ball.x;
-		ball.shadow[i].y = ball.y;
+		ball.shadow[i].x = (i + 1 < ballShadowsLen) ? ball.shadow[i + 1].x : ball.x;
+		ball.shadow[i].y = (i + 1 < ballShadowsLen) ? ball.shadow[i + 1].y : ball.y;
 	}
 }
 
