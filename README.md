@@ -1,5 +1,6 @@
-# Pix
+# Pong
 
 ### About
 
-Pix is a addon to the game library Allegro (v 5.2)
+Advanced recreation of Pong (1972), with music, sound, ball shadows, paddle velocities, menu.
+Built on Allegro5, a C/C++ graphical library.
