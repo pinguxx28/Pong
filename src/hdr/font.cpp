@@ -2,7 +2,7 @@
 
 u_char font::index(char character)
 {
-    char ch = toupper(character);
+    char ch = std::toupper(character);
     
     return ch - 32;
 }

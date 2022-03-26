@@ -71,6 +71,11 @@ Pix::Pix(short sBufferW, short sBufferH, float fDispScale, ALLEGRO_COLOR cBackgr
 	// initialize primitives
 	mustInit(al_init_primitives_addon(), "primitives");
 
+	// initialize auido
+	mustInit(al_install_audio(), "audio");
+	mustInit(al_init_acodec_addon(), "audio codecs");
+	mustInit(al_reserve_samples(8), "reserve samples");
+
 	// event queues?
 	al_register_event_source(qQueue, al_get_display_event_source(dDisp));
 	al_register_event_source(qQueue, al_get_timer_event_source(tTimer));

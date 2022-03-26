@@ -5,6 +5,8 @@
 
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 
 void mustInit(bool test, const char *desc);
@@ -41,9 +43,10 @@ namespace pix
 		ALLEGRO_TIMER *tTimer;          // Timer
 		ALLEGRO_EVENT_QUEUE *qQueue;    // Queue
 
-		ALLEGRO_EVENT eEvent; // Event
     
     public:
+		ALLEGRO_EVENT eEvent; // Event
+		
 		u_short sBufferW, sBufferH;
 		u_short sDispW, sDispH;
 		float   fDispScale;
